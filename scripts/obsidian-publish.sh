@@ -29,13 +29,24 @@ for rel in "${paths[@]}"; do
 
   if [[ -d "$src" ]]; then
     while IFS= read -r -d '' file; do
-      sub="${file#"$VAULT_DIR/"}"
+      rel_from_src="${file#"$src/"}"
+      # Avoid Quartz default ignore of "public" paths by remapping Public/ -> published/
+      if [[ "$rel" == "Public" ]]; then
+        sub="published/$rel_from_src"
+      else
+        sub="$rel/$rel_from_src"
+      fi
       mkdir -p "$DEST_DIR/$(dirname "$sub")"
       cp "$file" "$DEST_DIR/$sub"
     done < <(find "$src" -type f -name '*.md' -print0)
   elif [[ -f "$src" ]]; then
-    mkdir -p "$DEST_DIR/$(dirname "$rel")"
-    cp "$src" "$DEST_DIR/$rel"
+    if [[ "$rel" == Public/* ]]; then
+      sub="published/${rel#Public/}"
+    else
+      sub="$rel"
+    fi
+    mkdir -p "$DEST_DIR/$(dirname "$sub")"
+    cp "$src" "$DEST_DIR/$sub"
   else
     echo "Skipping missing path: $rel" >&2
   fi

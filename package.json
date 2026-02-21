@@ -12,12 +12,14 @@
     "url": "https://github.com/jackyzha0/quartz.git"
   },
   "scripts": {
-    "quartz": "./quartz/bootstrap-cli.mjs",
-    "docs": "npx quartz build --serve -d docs",
-    "check": "tsc --noEmit && npx prettier . --check",
-    "format": "npx prettier . --write",
-    "test": "tsx --test",
-    "profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1"
+    "quartz": "./scripts/node22.sh ./quartz/bootstrap-cli.mjs",
+    "docs": "./scripts/node22.sh npx quartz build --serve -d docs",
+    "sync:obsidian": "./scripts/obsidian-publish.sh",
+    "build:obsidian": "npm run sync:obsidian && ./scripts/node22.sh npx quartz build",
+    "check": "./scripts/node22.sh tsc --noEmit && ./scripts/node22.sh npx prettier . --check",
+    "format": "./scripts/node22.sh npx prettier . --write",
+    "test": "./scripts/node22.sh tsx --test",
+    "profile": "./scripts/node22.sh 0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1"
   },
   "engines": {
     "npm": ">=10.9.2",
